@@ -75,105 +75,176 @@ io.on("connection", function(socket) {
 });
 
 //GAME 2
-class Case {
-  constructor(x, y) {
-    this.x = x;
-    this.y = y;
-    this.content = {};
+class Piece{
+  constructor(x,y,team,pic,promotionPic){
+      this.matrixPosition = {x: x, y: y};
+      this.taken = false;
+      this.team = team;
+      this.hasPromotion = false;
+      this.isPromoted = false;
+      this.pic = pic;
+      this.promotionPic = promotionPic;
   }
 }
 
-class Plateau {
-  constructor(nbLignes, nbColonnes) {
-    this.nbLignes = nbLignes;
-    this.nbColonnes = nbColonnes;
-    this.init();
+class Lancer extends Piece {
+  constructor(x, y, team, pic, promotionPic){
+      super(x,y,team,pic, promotionPic);
+      this.letter = "L";
+      this.hasPromotion = true;
+      // this.pic = new_pieces["lancer"];
+      // this.promotionPic = new_pieces["lancer_up"];
   }
+}
 
-  init() {
-    //Fills the plateau with empty cases
-    this.reset();
-    //3rd line - Pawns
-    for (var i = 0; i < 9; i++) {
-      //Black
-      let black_pawn_c = this.getCase(i, 2).content;
-      black_pawn_c.team = "black";
-      black_pawn_c.name = "pawn";
-      //White
-      let white_pawn_c = this.getCase(i, 6).content;
-      white_pawn_c.team = "white";
-      white_pawn_c.name = "pawn";
-    }
-    //2nd line - Bishop & Rook
-    //Black
-    let black_bishop_c = this.getCase(1, 1).content;
-    black_bishop_c.team = "black";
-    black_bishop_c.name = "bishop";
-    let black_rook_c = this.getCase(7, 1).content;
-    black_rook_c.team = "black";
-    black_rook_c.name = "rook";
-    //White
-    let white_bishop_c = this.getCase(1, 7).content;
-    white_bishop_c.team = "white";
-    white_bishop_c.name = "bishop";
-    let white_rook_c = this.getCase(7, 7).content;
-    white_rook_c.team = "white";
-    white_rook_c.name = "rook";
-    //3rd line - Lancer/Knight/Silver/Gold/King/(reverse)
-    var rows = [0, 8];
-    for (let i = 0; i < rows.length; i++) {
-      let team = (i == 0) ? "black" : "white";
-      let lancer1_c = this.getCase(0, rows[i]).content;
-      lancer1_c.name = "lancer";
-      lancer1_c.team = team;
-      let knight1_c = this.getCase(1, rows[i]).content;
-      knight1_c.name = "knight";
-      knight1_c.team = team;
-      let silver1_c = this.getCase(2, rows[i]).content;
-      silver1_c.name = "silver";
-      silver1_c.team = team;
-      let gold1_c = this.getCase(3, rows[i]).content;
-      gold1_c.name = "gold";
-      gold1_c.team = team;
-      let king_c = this.getCase(4, rows[i]).content;
-      king_c.name = "king";
-      king_c.team = team;
-      let gold2_c = this.getCase(5, rows[i]).content;
-      gold2_c.name = "gold";
-      gold2_c.team = team;
-      let silver2_c = this.getCase(6, rows[i]).content;
-      silver2_c.name = "silver";
-      silver2_c.team = team;
-      let knight2_c = this.getCase(7, rows[i]).content;
-      knight2_c.name = "knight";
-      knight2_c.team = team;
-      let lancer2_c = this.getCase(8, rows[i]).content;
-      lancer2_c.name = "lancer";
-      lancer2_c.team = team;
-    }
+class Knight extends Piece {
+  constructor(x, y, team, pic, promotionPic){
+      super(x,y,team,pic, promotionPic);
+      this.letter = "Kn";
+      this.hasPromotion = true;
+      this.pic = pic;
+      this.promotionPic = promotionPic;
+      this.pic = new_pieces["knight"];
+      this.promotionPic = new_pieces["knight_up"];
+  }
+}
+
+class Silver extends Piece {
+  constructor(x, y, team, pic, promotionPic){
+      super(x,y,team,pic, promotionPic);
+      this.letter = "S";
+      this.hasPromotion = true;
+      this.pic = new_pieces["silver"];
+      this.promotionPic = new_pieces["silver_up"];
+  }
+}
+
+class Gold extends Piece {
+  constructor(x, y, team, pic, promotionPic){
+      super(x,y,team,pic, promotionPic);
+      this.letter = "G";
+      this.pic = new_pieces["gold"];
+  }
+}
+
+class Bishop extends Piece {
+  constructor(x, y, team, pic, promotionPic){
+      super(x,y,team,pic, promotionPic);
+      this.letter = "B";
+      this.hasPromotion = true;
+      this.pic = new_pieces["bishop"];
+      this.promotionPic = new_pieces["bishop_up"];
+  }
+}
+
+class Rook extends Piece {
+  constructor(x, y, team, pic, promotionPic){
+      super(x,y,team,pic, promotionPic);
+      this.letter = "R";
+      this.hasPromotion = true;
+      this.pic = new_pieces["rook"];
+      this.promotionPic = new_pieces["rook_up"];
+  }
+}
+
+class Pawn extends Piece {
+  constructor(x, y, team, pic, promotionPic){
+      super(x,y,team,pic, promotionPic);
+      this.letter = "P";
+      this.hasPromotion = true;
+      this.pic = new_pieces["pawn"];
+      this.promotionPic = new_pieces["pawn_up"];
+  }
+}
+
+class King extends Piece {
+  constructor(x, y, team, pic, promotionPic){
+      super(x,y,team,pic, promotionPic);
+      this.letter = "K";
+      this.pic = new_pieces["king"];
+  }
+}
+
+class Board {
+  //plateau contains a 2 dimension array of pieces
+  constructor(){
+      this.plateau = [];
+      this.reset();
+      this.setupPieces();
   }
 
   reset() {
-    this.plateau = [];
-    for (let i = 0; i < this.nbColonnes; i++) {
-      let colonne = [];
-      for (let j = 0; j < this.nbLignes; j++) {
-        colonne.push(new Case(i, j, {}));
+      this.plateau = [];
+      for (let i = 0; i < 9; i++) {
+        let colonne = [];
+        for (let j = 0; j < 9; j++) {
+          colonne.push({});
+        }
+        this.plateau.push(colonne);
       }
-      this.plateau.push(colonne);
     }
+
+  setupPieces(){
+      let team = "black";
+      this.plateau[0][0] = new Lancer(0,0,team);
+      this.plateau[1][0] = new Knight(1,0,team);
+      this.plateau[2][0] = new Silver(2,0,team);
+      this.plateau[3][0] = new Gold(3,0,team);
+      this.plateau[4][0] = new King(4,0,team);
+      this.plateau[5][0] = new Gold(5,0,team);
+      this.plateau[6][0] = new Silver(6,0,team);
+      this.plateau[7][0] = new Knight(7,0,team);
+      this.plateau[8][0] = new Lancer(8,0,team);
+      
+      this.plateau[7][1] = new Bishop(7,1,team);
+      this.plateau[1][1] = new Rook(1,1,team);
+
+      this.plateau[0][2] = new Pawn(0,2,team);
+      this.plateau[1][2] = new Pawn(1,2,team);
+      this.plateau[2][2] = new Pawn(2,2,team);
+      this.plateau[3][2] = new Pawn(3,2,team);
+      this.plateau[4][2] = new Pawn(4,2,team);
+      this.plateau[5][2] = new Pawn(5,2,team);
+      this.plateau[6][2] = new Pawn(6,2,team);
+      this.plateau[7][2] = new Pawn(7,2,team);
+      this.plateau[8][2] = new Pawn(8,2,team);
+
+      
+      team = "white";
+      this.plateau[0][8] = new Lancer(0,8,team);
+      this.plateau[1][8] = new Knight(1,8,team);
+      this.plateau[2][8] = new Silver(2,8,team);
+      this.plateau[3][8] = new Gold(3,8,team);
+      this.plateau[4][8] = new King(4,8,team);
+      this.plateau[5][8] = new Gold(5,8,team);
+      this.plateau[6][8] = new Silver(6,8,team);
+      this.plateau[7][8] = new Knight(7,8,team);
+      this.plateau[8][8] = new Lancer(8,8,team);
+      
+      this.plateau[1][7] = new Bishop(1,7,team);
+      this.plateau[7][7] = new Rook(7,7,team);
+
+      this.plateau[0][6] = new Pawn(0,6,team);
+      this.plateau[1][6] = new Pawn(1,6,team);
+      this.plateau[2][6] = new Pawn(2,6,team);
+      this.plateau[3][6] = new Pawn(3,6,team);
+      this.plateau[4][6] = new Pawn(4,6,team);
+      this.plateau[5][6] = new Pawn(5,6,team);
+      this.plateau[6][6] = new Pawn(6,6,team);
+      this.plateau[7][6] = new Pawn(7,6,team);
+      this.plateau[8][6] = new Pawn(8,6,team);
   }
 
-  getCase(x, y) {
+  getPieceAt(x,y){
     return this.plateau[x][y];
   }
 
-  getPlateau() {
-    return this.plateau;
+  getBoard(){
+      return this.plateau;
   }
 }
 
-var plateau = new Plateau(9, 9);
+var plateau = new Board();
 
 setInterval(function() {
   io.sockets.emit("state", clients);

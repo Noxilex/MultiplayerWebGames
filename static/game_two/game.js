@@ -1,11 +1,11 @@
 var socket = io();
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
-var background = document.getElementById("bg");
+var bg = document.getElementById("bg");
 
 const CASE_SIZE = 70;
 
-var plateau = [];
+var plateau_player = [];
 var selected_case;
 var availableMoves = [];
 
@@ -50,50 +50,29 @@ canvas.addEventListener("click", function(evt) {
 socket.emit("new_shogi_player");
 
 socket.on("plateauUpdate", function(plateau) {
-  plateau = plateau;
-  drawPlateau(ctx, plateau);
+  plateau_player = plateau;
+  drawPlateau(ctx, plateau_player);
 });
 
 //FUNCTIONS
+function setup(){
+  createCanvas(9*CASE_SIZE, 9*CASE_SIZE)
+}
 
+function draw(){
+  drawPlateau(ctx, plateau_player);
+}
 function drawPlateau(ctx, plateau) {
   plateau = new Board().getBoard();
-  ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+  ctx.drawImage(bg, 0, 0, canvas.width, canvas.height);
   for (let x = 0; x < 9; x++) {
     for (let y = 0; y < 9; y++) {
       //Draw piece
-      let piece = plateau[x][y].content;
-      //If a team is black, it's image should be turned upside down
-      ctx.save()
-      if(piece.team == "black"){
-        ctx.translate(
-          x * CASE_SIZE+CASE_SIZE/2,
-          y * CASE_SIZE+CASE_SIZE/2)
-        ctx.rotate(180 * Math.PI/180);
-        ctx.translate(
-          - (x * CASE_SIZE+CASE_SIZE/2),
-          - (y * CASE_SIZE+CASE_SIZE/2))
+      let piece = plateau[x][y];
+      if(piece instanceof Piece){
+        console.log(piece);
+        piece.draw(ctx);
       }
-      if (piece.name) {
-        if (new_pieces[piece.name]) {
-          ctx.drawImage(
-            new_pieces[piece.name],
-            x * CASE_SIZE,
-            y * CASE_SIZE,
-            CASE_SIZE,
-            CASE_SIZE
-          );
-        } else {
-          ctx.font = "15px Arial";
-          ctx.fillStyle = "black";
-          ctx.fillText(
-            piece.name,
-            x * CASE_SIZE + CASE_SIZE / 4,
-            y * CASE_SIZE + CASE_SIZE / 2
-          );
-        }
-      }
-      ctx.restore();
       //Draw square
       ctx.beginPath();
       ctx.strokeStyle = "#AA5500";

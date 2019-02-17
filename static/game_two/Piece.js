@@ -1,14 +1,32 @@
 class Piece{
     constructor(x,y,team){
-        this.matrixPosition = createVector(x,y);
-        this.pixelPosition = createVector(x*CASE_SIZE, y*CASE_SIZE);
+        this.matrixPosition = {x: x, y: y};
+        this.pixelPosition = {x: x*CASE_SIZE, y: y*CASE_SIZE};
         this.taken = false;
         this.team = team;
-        this.letter = letter;
         this.hasPromotion = false;
         this.isPromoted = false;
-        this.pic = pic;
-        this.promotionPic = promotionPic;
+    }
+
+    draw(ctx){
+        ctx.save()
+        if(this.team == "black"){
+          ctx.translate(
+            this.pixelPosition.x + CASE_SIZE/2,
+            this.pixelPosition.y + CASE_SIZE/2)
+          ctx.rotate(180 * Math.PI/180);
+          ctx.translate(
+            -( this.pixelPosition.x + CASE_SIZE/2),
+            -( this.pixelPosition.y + CASE_SIZE/2))
+        }
+        ctx.drawImage(
+            this.pic,
+            this.pixelPosition.x,
+            this.pixelPosition.y,
+            CASE_SIZE,
+            CASE_SIZE
+          );
+        ctx.restore();
     }
 }
 

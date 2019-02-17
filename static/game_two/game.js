@@ -6,7 +6,7 @@ var bg = document.getElementById("bg");
 const CASE_SIZE = 70;
 
 var board = new Board();
-var selected_case;
+var selected_case = {};
 var availableMoves = [];
 
 canvas.width = 9 * CASE_SIZE;
@@ -37,10 +37,22 @@ pieces_promo_name.forEach(piece_name => {
 canvas.addEventListener("click", function(evt) {
   var mP = getMousePos(canvas, evt);
   var coord = getPosition(mP.x, mP.y);
-  selected_case = board.getPieceAt(coord.column, coord.row);
-  availableMoves = getAvailableMoves(selected_case);
-  console.log(selected_case);
-  drawBoard(ctx, board);
+  if (isAvailableMove(coord.x, coord.y)) {
+    console.log("Is available move")
+    socket.emit("movePiece", {
+      from: { x: selected_case.x, y: selected_case.y },
+      to: { x: coord.x, y: coord.y }
+    });
+    selected_case = {};
+    availableMoves = [];
+  } else {
+    selected_case = board.getPieceAt(coord.x, coord.y);
+    if (selected_case.name) {
+      availableMoves = getAvailableMoves(selected_case);
+      console.log(selected_case);
+      drawBoard(ctx, board);
+    }
+  }
 });
 
 //SOCKET
@@ -81,12 +93,12 @@ function drawBoard(ctx, board) {
       ctx.stroke();
     }
   }
-  if (selected_case) {
+  if (selected_case.name) {
     ctx.beginPath();
     ctx.strokeStyle = "#00FF00";
     ctx.rect(
-      selected_case.matrixPosition.x * CASE_SIZE,
-      selected_case.matrixPosition.y * CASE_SIZE,
+      selected_case.x * CASE_SIZE,
+      selected_case.y * CASE_SIZE,
       CASE_SIZE,
       CASE_SIZE
     );
@@ -112,7 +124,7 @@ function drawBoard(ctx, board) {
 }
 
 function getPosition(x, y) {
-  return { column: Math.floor(x / CASE_SIZE), row: Math.floor(y / CASE_SIZE) };
+  return { x: Math.floor(x / CASE_SIZE), y: Math.floor(y / CASE_SIZE) };
 }
 
 function getMousePos(canvas, evt) {
@@ -128,8 +140,8 @@ function getAvailableMoves(selected_case) {
   if (selected_case.name) {
     return [
       {
-        x: selected_case.matrixPosition.x,
-        y: selected_case.matrixPosition.y - 1
+        x: selected_case.x,
+        y: selected_case.y - 1
       }
     ];
   } else {
@@ -139,26 +151,32 @@ function getAvailableMoves(selected_case) {
 
 function drawPiece(piece) {
   ctx.save();
-  if(!piece.pixelPosition){
-    piece.pixelPosition = {x: piece.matrixPosition.x * CASE_SIZE, y: piece.matrixPosition.y * CASE_SIZE};
-  }
+  let pixelPos = { x: piece.x * CASE_SIZE, y: piece.y * CASE_SIZE };
+
   if (piece.team == "black") {
-    ctx.translate(
-      piece.pixelPosition.x + CASE_SIZE / 2,
-      piece.pixelPosition.y + CASE_SIZE / 2
-    );
+    ctx.translate(pixelPos.x + CASE_SIZE / 2, pixelPos.y + CASE_SIZE / 2);
     ctx.rotate((180 * Math.PI) / 180);
-    ctx.translate(
-      -(piece.pixelPosition.x + CASE_SIZE / 2),
-      -(piece.pixelPosition.y + CASE_SIZE / 2)
-    );
+    ctx.translate(-(pixelPos.x + CASE_SIZE / 2), -(pixelPos.y + CASE_SIZE / 2));
   }
   ctx.drawImage(
     new_pieces[piece.name],
-    piece.pixelPosition.x,
-    piece.pixelPosition.y,
+    pixelPos.x,
+    pixelPos.y,
     CASE_SIZE,
     CASE_SIZE
   );
   ctx.restore();
+}
+
+function isAvailableMove(x, y) {
+  let result = false;
+  availableMoves.forEach(move => {
+    console.log(move);
+    console.log({x: x, y:y})
+    if (move.x == x && move.y == y){
+      result = true;
+      return;
+    }
+  });
+  return result;
 }

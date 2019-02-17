@@ -1,6 +1,7 @@
 class Piece{
     constructor(x,y,team){
-        this.matrixPosition = {x: x, y: y};
+        this.x = x;
+        this.y = y;
         this.pixelPosition = {x: x*CASE_SIZE, y: y*CASE_SIZE};
         this.taken = false;
         this.team = team;

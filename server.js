@@ -70,14 +70,20 @@ io.on("connection", function(socket) {
 
   socket.on("new_shogi_player", function() {
     console.log("New shogi player connected");
-    io.sockets.emit("plateauUpdate", plateau.getBoard());
+    io.sockets.emit("plateauUpdate", board.getBoard());
   });
+
+  socket.on("movePiece", function(move){
+    board.movePiece(move.from.x, move.from.y, move.to.x, move.to.y);
+    io.sockets.emit("plateauUpdate", board.getBoard());
+  })
 });
 
 //GAME 2
 class Piece{
   constructor(x,y,team,pic,promotionPic){
-      this.matrixPosition = {x: x, y: y};
+      this.x = x;
+      this.y = y;
       this.taken = false;
       this.team = team;
       this.hasPromotion = promotionPic ? true: false;
@@ -226,9 +232,19 @@ class Board {
   getBoard(){
       return this.plateau;
   }
+
+  movePiece(fromX,fromY,toX,toY){
+    console.log(`Moved from {x:${fromX}, y: ${fromY}} to {x:${toX}, y: ${toY}}`)
+    let ancienPiece = this.getPieceAt(fromX,fromY);
+    ancienPiece.x = toX;
+    ancienPiece.y = toY;
+    this.plateau[fromX][fromY] = {};
+    this.plateau[toX][toY] = ancienPiece;
+    console.log()
+  }
 }
 
-var plateau = new Board();
+var board = new Board();
 
 setInterval(function() {
   io.sockets.emit("state", clients);

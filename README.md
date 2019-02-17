@@ -14,8 +14,12 @@ Available version on: http://noxilex.ovh:5000
 
 
  # TODO
-- Piece movement
-- Piece movement preview
-- Piece take
-- Piece back in
-- Game over
+- [X] Data structure (board & pieces)
+- [X] Draw board & pieces
+- [X] Draw images instead of shapes
+- [ ] Piece movement rules
+- [ ] Piece movement preview (semi-working, need to make it work according to rules)
+- [X] Piece movement according to preview
+- [ ] Piece take
+- [ ] Piece back in
+- [ ] Game over

@@ -1,7 +1,7 @@
 var socket = io();
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
-var background = document.getElementById("img");
+var background = document.getElementById("bg");
 
 const CASE_SIZE = 70;
 
@@ -11,6 +11,28 @@ var availableMoves = [];
 
 canvas.width = 9 * CASE_SIZE;
 canvas.height = 9 * CASE_SIZE;
+//Preload images
+var pieces_nopromo_name = [
+  "gold",
+  "king"
+];
+
+var pieces_promo_name = [
+  "knight",  
+  "lancer",
+  "silver",
+  "bishop",
+  "pawn",
+  "rook"
+]
+var new_pieces = [];
+pieces_nopromo_name.forEach(piece_name => {
+  new_pieces[piece_name] = document.getElementsByClassName(piece_name)[0];
+});
+pieces_promo_name.forEach(piece_name => {
+  new_pieces[piece_name] = document.getElementsByClassName(piece_name)[0];
+  new_pieces[piece_name + "_up"] = document.getElementsByClassName(piece_name + "_up")[0];
+})
 
 //EVENTS
 canvas.addEventListener("click", function(evt) {
@@ -23,6 +45,8 @@ canvas.addEventListener("click", function(evt) {
 });
 
 //SOCKET
+
+//Creates the new player once the pieces have been loaded
 socket.emit("new_shogi_player");
 
 socket.on("plateauUpdate", function(plateau) {
@@ -40,13 +64,23 @@ function drawPlateau(ctx, plateau) {
       //Draw piece
       let piece = plateau[x][y].content;
       if (piece.name) {
-        ctx.font = "15px Arial";
-        ctx.fillStyle = "black";
-        ctx.fillText(
-          plateau[x][y].content.name,
-          x * CASE_SIZE + CASE_SIZE / 4,
-          y * CASE_SIZE + CASE_SIZE / 2
-        );
+        if (new_pieces[piece.name]) {
+          ctx.drawImage(
+            new_pieces[piece.name],
+            x * CASE_SIZE,
+            y * CASE_SIZE,
+            CASE_SIZE,
+            CASE_SIZE
+          );
+        } else {
+          ctx.font = "15px Arial";
+          ctx.fillStyle = "black";
+          ctx.fillText(
+            piece.name,
+            x * CASE_SIZE + CASE_SIZE / 4,
+            y * CASE_SIZE + CASE_SIZE / 2
+          );
+        }
       }
       //Draw square
       ctx.beginPath();
@@ -66,22 +100,19 @@ function drawPlateau(ctx, plateau) {
     );
     ctx.stroke();
     if (availableMoves.length > 0) {
-      console.log(availableMoves)
+      console.log(availableMoves);
       ctx.beginPath();
       ctx.strokeStyle = "#0000FF";
       ctx.fillStyle = "#0000FFAA";
       for (let i = 0; i < availableMoves.length; i++) {
         let pos = availableMoves[i];
-        ctx.rect(
+        ctx.rect(pos.x * CASE_SIZE, pos.y * CASE_SIZE, CASE_SIZE, CASE_SIZE);
+        ctx.fillRect(
           pos.x * CASE_SIZE,
           pos.y * CASE_SIZE,
           CASE_SIZE,
           CASE_SIZE
         );
-        ctx.fillRect(pos.x * CASE_SIZE,
-          pos.y * CASE_SIZE,
-          CASE_SIZE,
-          CASE_SIZE)
       }
       ctx.stroke();
     }

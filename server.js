@@ -70,7 +70,7 @@ io.on("connection", function(socket) {
 
   socket.on("new_shogi_player", function() {
     console.log("New shogi player connected");
-    io.sockets.emit("plateauUpdate", plateau.getPlateau());
+    io.sockets.emit("plateauUpdate", plateau.getBoard());
   });
 });
 
@@ -80,7 +80,7 @@ class Piece{
       this.matrixPosition = {x: x, y: y};
       this.taken = false;
       this.team = team;
-      this.hasPromotion = false;
+      this.hasPromotion = promotionPic ? true: false;
       this.isPromoted = false;
       this.pic = pic;
       this.promotionPic = promotionPic;
@@ -90,78 +90,62 @@ class Piece{
 class Lancer extends Piece {
   constructor(x, y, team, pic, promotionPic){
       super(x,y,team,pic, promotionPic);
-      this.letter = "L";
+      this.name = "lancer";
       this.hasPromotion = true;
-      // this.pic = new_pieces["lancer"];
-      // this.promotionPic = new_pieces["lancer_up"];
   }
 }
 
 class Knight extends Piece {
   constructor(x, y, team, pic, promotionPic){
       super(x,y,team,pic, promotionPic);
-      this.letter = "Kn";
+      this.name = "knight";
       this.hasPromotion = true;
-      this.pic = pic;
-      this.promotionPic = promotionPic;
-      this.pic = new_pieces["knight"];
-      this.promotionPic = new_pieces["knight_up"];
   }
 }
 
 class Silver extends Piece {
   constructor(x, y, team, pic, promotionPic){
       super(x,y,team,pic, promotionPic);
-      this.letter = "S";
+      this.name = "silver";
       this.hasPromotion = true;
-      this.pic = new_pieces["silver"];
-      this.promotionPic = new_pieces["silver_up"];
   }
 }
 
 class Gold extends Piece {
   constructor(x, y, team, pic, promotionPic){
       super(x,y,team,pic, promotionPic);
-      this.letter = "G";
-      this.pic = new_pieces["gold"];
+      this.name = "gold";
   }
 }
 
 class Bishop extends Piece {
   constructor(x, y, team, pic, promotionPic){
       super(x,y,team,pic, promotionPic);
-      this.letter = "B";
+      this.name = "bishop";
       this.hasPromotion = true;
-      this.pic = new_pieces["bishop"];
-      this.promotionPic = new_pieces["bishop_up"];
   }
 }
 
 class Rook extends Piece {
   constructor(x, y, team, pic, promotionPic){
       super(x,y,team,pic, promotionPic);
-      this.letter = "R";
+      this.name = "rook";
       this.hasPromotion = true;
-      this.pic = new_pieces["rook"];
-      this.promotionPic = new_pieces["rook_up"];
   }
 }
 
 class Pawn extends Piece {
   constructor(x, y, team, pic, promotionPic){
       super(x,y,team,pic, promotionPic);
-      this.letter = "P";
+      this.name = "pawn";
       this.hasPromotion = true;
-      this.pic = new_pieces["pawn"];
-      this.promotionPic = new_pieces["pawn_up"];
   }
 }
 
 class King extends Piece {
   constructor(x, y, team, pic, promotionPic){
       super(x,y,team,pic, promotionPic);
-      this.letter = "K";
-      this.pic = new_pieces["king"];
+      this.name = "king";
   }
 }
 

@@ -5,7 +5,7 @@ var background = document.getElementById("bg");
 
 const CASE_SIZE = 70;
 
-var plateau_player = [];
+var plateau = [];
 var selected_case;
 var availableMoves = [];
 
@@ -38,10 +38,10 @@ pieces_promo_name.forEach(piece_name => {
 canvas.addEventListener("click", function(evt) {
   var mP = getMousePos(canvas, evt);
   var coord = getPosition(mP.x, mP.y);
-  selected_case = plateau_player[coord.column][coord.row];
+  selected_case = plateau[coord.column][coord.row];
   availableMoves = getAvailableMoves(selected_case);
   console.log(selected_case);
-  drawPlateau(ctx, plateau_player);
+  drawPlateau(ctx, plateau);
 });
 
 //SOCKET
@@ -50,7 +50,7 @@ canvas.addEventListener("click", function(evt) {
 socket.emit("new_shogi_player");
 
 socket.on("plateauUpdate", function(plateau) {
-  plateau_player = plateau;
+  plateau = plateau;
   drawPlateau(ctx, plateau);
 });
 

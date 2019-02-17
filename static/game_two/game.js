@@ -57,12 +57,22 @@ socket.on("plateauUpdate", function(plateau) {
 //FUNCTIONS
 
 function drawPlateau(ctx, plateau) {
-  // ctx.clearRect(0, 0, canvas.width, canvas.height)
   ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
   for (let x = 0; x < 9; x++) {
     for (let y = 0; y < 9; y++) {
       //Draw piece
       let piece = plateau[x][y].content;
+      //If a team is black, it's image should be turned upside down
+      ctx.save()
+      if(piece.team == "black"){
+        ctx.translate(
+          x * CASE_SIZE+CASE_SIZE/2,
+          y * CASE_SIZE+CASE_SIZE/2)
+        ctx.rotate(180 * Math.PI/180);
+        ctx.translate(
+          - (x * CASE_SIZE+CASE_SIZE/2),
+          - (y * CASE_SIZE+CASE_SIZE/2))
+      }
       if (piece.name) {
         if (new_pieces[piece.name]) {
           ctx.drawImage(
@@ -82,6 +92,7 @@ function drawPlateau(ctx, plateau) {
           );
         }
       }
+      ctx.restore();
       //Draw square
       ctx.beginPath();
       ctx.strokeStyle = "#AA5500";
@@ -133,5 +144,9 @@ function getMousePos(canvas, evt) {
 
 function getAvailableMoves(selected_case) {
   //If one of the available moves doesn't have an empty case, don't show it/show it red
-  return [{ x: selected_case.x, y: selected_case.y - 1 }];
+  if(selected_case.content.name){
+    return [{ x: selected_case.x, y: selected_case.y - 1 }];
+  }else{
+    return [];
+  }
 }

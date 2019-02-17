@@ -57,6 +57,7 @@ socket.on("plateauUpdate", function(plateau) {
 //FUNCTIONS
 
 function drawPlateau(ctx, plateau) {
+  plateau = new Board().getBoard();
   ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
   for (let x = 0; x < 9; x++) {
     for (let y = 0; y < 9; y++) {

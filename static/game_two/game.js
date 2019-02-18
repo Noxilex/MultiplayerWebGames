@@ -137,16 +137,15 @@ function getMousePos(canvas, evt) {
 
 function getAvailableMoves(selected_case) {
   //If one of the available moves doesn't have an empty case, don't show it/show it red
-  if (selected_case.name) {
-    return [
-      {
-        x: selected_case.x,
-        y: selected_case.y - 1
-      }
-    ];
-  } else {
-    return [];
+  let moves = []
+  if (selected_case.directions) {
+    selected_case.directions.forEach(direction => {
+      let move = {x: selected_case.x + direction.x, y: selected_case.y + direction.y}
+      //let piece = board.getPieceAt(move.x, move.y);
+      moves.push(move);
+    })
   }
+  return moves;
 }
 
 function drawPiece(piece) {

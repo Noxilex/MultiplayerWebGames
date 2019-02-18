@@ -73,174 +73,184 @@ io.on("connection", function(socket) {
     io.sockets.emit("plateauUpdate", board.getBoard());
   });
 
-  socket.on("movePiece", function(move){
+  socket.on("movePiece", function(move) {
     board.movePiece(move.from.x, move.from.y, move.to.x, move.to.y);
     io.sockets.emit("plateauUpdate", board.getBoard());
-  })
+  });
 });
 
 //GAME 2
-class Piece{
-  constructor(x,y,team,pic,promotionPic){
-      this.x = x;
-      this.y = y;
-      this.taken = false;
-      this.team = team;
-      this.hasPromotion = promotionPic ? true: false;
-      this.isPromoted = false;
-      this.pic = pic;
-      this.promotionPic = promotionPic;
+class Piece {
+  constructor(x, y, team, pic, promotionPic) {
+    this.x = x;
+    this.y = y;
+    this.taken = false;
+    this.team = team;
+    this.hasPromotion = promotionPic ? true : false;
+    this.isPromoted = false;
+    this.pic = pic;
+    this.promotionPic = promotionPic;
   }
 }
 
 class Lancer extends Piece {
-  constructor(x, y, team, pic, promotionPic){
-      super(x,y,team,pic, promotionPic);
-      this.name = "lancer";
-      this.hasPromotion = true;
+  constructor(x, y, team, pic, promotionPic) {
+    super(x, y, team, pic, promotionPic);
+    this.name = "lancer";
+    this.hasPromotion = true;
   }
 }
 
 class Knight extends Piece {
-  constructor(x, y, team, pic, promotionPic){
-      super(x,y,team,pic, promotionPic);
-      this.name = "knight";
-      this.hasPromotion = true;
+  constructor(x, y, team, pic, promotionPic) {
+    super(x, y, team, pic, promotionPic);
+    this.name = "knight";
+    this.hasPromotion = true;
   }
 }
 
 class Silver extends Piece {
-  constructor(x, y, team, pic, promotionPic){
-      super(x,y,team,pic, promotionPic);
-      this.name = "silver";
-      this.hasPromotion = true;
+  constructor(x, y, team, pic, promotionPic) {
+    super(x, y, team, pic, promotionPic);
+    this.name = "silver";
+    this.hasPromotion = true;
   }
 }
 
 class Gold extends Piece {
-  constructor(x, y, team, pic, promotionPic){
-      super(x,y,team,pic, promotionPic);
-      this.name = "gold";
+  constructor(x, y, team, pic, promotionPic) {
+    super(x, y, team, pic, promotionPic);
+    this.name = "gold";
   }
 }
 
 class Bishop extends Piece {
-  constructor(x, y, team, pic, promotionPic){
-      super(x,y,team,pic, promotionPic);
-      this.name = "bishop";
-      this.hasPromotion = true;
+  constructor(x, y, team, pic, promotionPic) {
+    super(x, y, team, pic, promotionPic);
+    this.name = "bishop";
+    this.hasPromotion = true;
   }
 }
 
 class Rook extends Piece {
-  constructor(x, y, team, pic, promotionPic){
-      super(x,y,team,pic, promotionPic);
-      this.name = "rook";
-      this.hasPromotion = true;
+  constructor(x, y, team, pic, promotionPic) {
+    super(x, y, team, pic, promotionPic);
+    this.name = "rook";
+    this.hasPromotion = true;
   }
 }
 
 class Pawn extends Piece {
-  constructor(x, y, team, pic, promotionPic){
-      super(x,y,team,pic, promotionPic);
-      this.name = "pawn";
-      this.hasPromotion = true;
+  constructor(x, y, team, pic, promotionPic) {
+    super(x, y, team, pic, promotionPic);
+    this.name = "pawn";
+    this.hasPromotion = true;
+    if(team == "black"){
+      this.directions = [
+        {x: 0, y: 1}
+      ]
+    }else{
+      this.directions = [
+        {x: 0, y: -1}
+      ]
+    }
   }
 }
 
 class King extends Piece {
-  constructor(x, y, team, pic, promotionPic){
-      super(x,y,team,pic, promotionPic);
-      this.name = "king";
+  constructor(x, y, team, pic, promotionPic) {
+    super(x, y, team, pic, promotionPic);
+    this.name = "king";
   }
 }
 
 class Board {
   //plateau contains a 2 dimension array of pieces
-  constructor(){
-      this.plateau = [];
-      this.reset();
-      this.setupPieces();
+  constructor() {
+    this.plateau = [];
+    this.reset();
+    this.setupPieces();
   }
 
   reset() {
-      this.plateau = [];
-      for (let i = 0; i < 9; i++) {
-        let colonne = [];
-        for (let j = 0; j < 9; j++) {
-          colonne.push({});
-        }
-        this.plateau.push(colonne);
+    this.plateau = [];
+    for (let i = 0; i < 9; i++) {
+      let colonne = [];
+      for (let j = 0; j < 9; j++) {
+        colonne.push({});
       }
+      this.plateau.push(colonne);
     }
-
-  setupPieces(){
-      let team = "black";
-      this.plateau[0][0] = new Lancer(0,0,team);
-      this.plateau[1][0] = new Knight(1,0,team);
-      this.plateau[2][0] = new Silver(2,0,team);
-      this.plateau[3][0] = new Gold(3,0,team);
-      this.plateau[4][0] = new King(4,0,team);
-      this.plateau[5][0] = new Gold(5,0,team);
-      this.plateau[6][0] = new Silver(6,0,team);
-      this.plateau[7][0] = new Knight(7,0,team);
-      this.plateau[8][0] = new Lancer(8,0,team);
-      
-      this.plateau[7][1] = new Bishop(7,1,team);
-      this.plateau[1][1] = new Rook(1,1,team);
-
-      this.plateau[0][2] = new Pawn(0,2,team);
-      this.plateau[1][2] = new Pawn(1,2,team);
-      this.plateau[2][2] = new Pawn(2,2,team);
-      this.plateau[3][2] = new Pawn(3,2,team);
-      this.plateau[4][2] = new Pawn(4,2,team);
-      this.plateau[5][2] = new Pawn(5,2,team);
-      this.plateau[6][2] = new Pawn(6,2,team);
-      this.plateau[7][2] = new Pawn(7,2,team);
-      this.plateau[8][2] = new Pawn(8,2,team);
-
-      
-      team = "white";
-      this.plateau[0][8] = new Lancer(0,8,team);
-      this.plateau[1][8] = new Knight(1,8,team);
-      this.plateau[2][8] = new Silver(2,8,team);
-      this.plateau[3][8] = new Gold(3,8,team);
-      this.plateau[4][8] = new King(4,8,team);
-      this.plateau[5][8] = new Gold(5,8,team);
-      this.plateau[6][8] = new Silver(6,8,team);
-      this.plateau[7][8] = new Knight(7,8,team);
-      this.plateau[8][8] = new Lancer(8,8,team);
-      
-      this.plateau[1][7] = new Bishop(1,7,team);
-      this.plateau[7][7] = new Rook(7,7,team);
-
-      this.plateau[0][6] = new Pawn(0,6,team);
-      this.plateau[1][6] = new Pawn(1,6,team);
-      this.plateau[2][6] = new Pawn(2,6,team);
-      this.plateau[3][6] = new Pawn(3,6,team);
-      this.plateau[4][6] = new Pawn(4,6,team);
-      this.plateau[5][6] = new Pawn(5,6,team);
-      this.plateau[6][6] = new Pawn(6,6,team);
-      this.plateau[7][6] = new Pawn(7,6,team);
-      this.plateau[8][6] = new Pawn(8,6,team);
   }
 
-  getPieceAt(x,y){
+  setupPieces() {
+    let team = "black";
+    this.plateau[0][0] = new Lancer(0, 0, team);
+    this.plateau[1][0] = new Knight(1, 0, team);
+    this.plateau[2][0] = new Silver(2, 0, team);
+    this.plateau[3][0] = new Gold(3, 0, team);
+    this.plateau[4][0] = new King(4, 0, team);
+    this.plateau[5][0] = new Gold(5, 0, team);
+    this.plateau[6][0] = new Silver(6, 0, team);
+    this.plateau[7][0] = new Knight(7, 0, team);
+    this.plateau[8][0] = new Lancer(8, 0, team);
+
+    this.plateau[7][1] = new Bishop(7, 1, team);
+    this.plateau[1][1] = new Rook(1, 1, team);
+
+    this.plateau[0][2] = new Pawn(0, 2, team);
+    this.plateau[1][2] = new Pawn(1, 2, team);
+    this.plateau[2][2] = new Pawn(2, 2, team);
+    this.plateau[3][2] = new Pawn(3, 2, team);
+    this.plateau[4][2] = new Pawn(4, 2, team);
+    this.plateau[5][2] = new Pawn(5, 2, team);
+    this.plateau[6][2] = new Pawn(6, 2, team);
+    this.plateau[7][2] = new Pawn(7, 2, team);
+    this.plateau[8][2] = new Pawn(8, 2, team);
+
+    team = "white";
+    this.plateau[0][8] = new Lancer(0, 8, team);
+    this.plateau[1][8] = new Knight(1, 8, team);
+    this.plateau[2][8] = new Silver(2, 8, team);
+    this.plateau[3][8] = new Gold(3, 8, team);
+    this.plateau[4][8] = new King(4, 8, team);
+    this.plateau[5][8] = new Gold(5, 8, team);
+    this.plateau[6][8] = new Silver(6, 8, team);
+    this.plateau[7][8] = new Knight(7, 8, team);
+    this.plateau[8][8] = new Lancer(8, 8, team);
+
+    this.plateau[1][7] = new Bishop(1, 7, team);
+    this.plateau[7][7] = new Rook(7, 7, team);
+
+    this.plateau[0][6] = new Pawn(0, 6, team);
+    this.plateau[1][6] = new Pawn(1, 6, team);
+    this.plateau[2][6] = new Pawn(2, 6, team);
+    this.plateau[3][6] = new Pawn(3, 6, team);
+    this.plateau[4][6] = new Pawn(4, 6, team);
+    this.plateau[5][6] = new Pawn(5, 6, team);
+    this.plateau[6][6] = new Pawn(6, 6, team);
+    this.plateau[7][6] = new Pawn(7, 6, team);
+    this.plateau[8][6] = new Pawn(8, 6, team);
+  }
+
+  getPieceAt(x, y) {
     return this.plateau[x][y];
   }
 
-  getBoard(){
-      return this.plateau;
+  getBoard() {
+    return this.plateau;
   }
 
-  movePiece(fromX,fromY,toX,toY){
-    console.log(`Moved from {x:${fromX}, y: ${fromY}} to {x:${toX}, y: ${toY}}`)
-    let ancienPiece = this.getPieceAt(fromX,fromY);
+  movePiece(fromX, fromY, toX, toY) {
+    console.log(
+      `Moved from {x:${fromX}, y: ${fromY}} to {x:${toX}, y: ${toY}}`
+    );
+    let ancienPiece = this.getPieceAt(fromX, fromY);
     ancienPiece.x = toX;
     ancienPiece.y = toY;
     this.plateau[fromX][fromY] = {};
     this.plateau[toX][toY] = ancienPiece;
-    console.log()
+    console.log();
   }
 }
 

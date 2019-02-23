@@ -37,21 +37,22 @@ pieces_promo_name.forEach(piece_name => {
 canvas.addEventListener("click", function(evt) {
   var mP = getMousePos(canvas, evt);
   var coord = getPosition(mP.x, mP.y);
-  if (isAvailableMove(coord.x, coord.y)) {
+  let selectedSpot = board.getPieceAt(coord.x, coord.y);
+  console.log(selectedSpot)
+  if (selected_case.name && isAvailableMove(coord.x, coord.y)) {
     console.log("Is available move")
+    console.log(coord)
     socket.emit("movePiece", {
       from: { x: selected_case.x, y: selected_case.y },
       to: { x: coord.x, y: coord.y }
     });
     selected_case = {};
     availableMoves = [];
-  } else {
+  } else if(selectedSpot.name){
     selected_case = board.getPieceAt(coord.x, coord.y);
-    if (selected_case.name) {
-      availableMoves = getAvailableMoves(selected_case);
-      console.log(selected_case);
-      drawBoard(ctx, board);
-    }
+    availableMoves = getAvailableMoves(selected_case);
+    console.log(selected_case);
+    drawBoard(ctx, board);
   }
 });
 

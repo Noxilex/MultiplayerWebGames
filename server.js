@@ -74,6 +74,8 @@ io.on("connection", function(socket) {
   });
 
   socket.on("movePiece", function(move) {
+    console.log(`MoveRequest From: {${move.from.x}, ${move.from.y}}`)
+    console.log(`MoveRequest To: {${move.to.x}, ${move.to.y}}`)
     board.movePiece(move.from.x, move.from.y, move.to.x, move.to.y);
     io.sockets.emit("plateauUpdate", board.getBoard());
   });
@@ -114,6 +116,23 @@ class Silver extends Piece {
     super(x, y, team, pic, promotionPic);
     this.name = "silver";
     this.hasPromotion = true;
+    if(team == "black"){
+      this.directions = [
+        {x: -1, y: 1},
+        {x: 0, y: 1},
+        {x: 1, y: 1},
+        {x: -1, y: -1},
+        {x: 1, y: -1}
+      ]
+    }else{
+      this.directions = [
+        {x: -1, y: -1},
+        {x: 0, y: -1},
+        {x: 1, y: -1},
+        {x: -1, y: 1},
+        {x: 1, y: 1}
+      ]
+    }
   }
 }
 
@@ -121,6 +140,25 @@ class Gold extends Piece {
   constructor(x, y, team, pic, promotionPic) {
     super(x, y, team, pic, promotionPic);
     this.name = "gold";
+    if(team == "black"){
+      this.directions = [
+        {x: -1, y: 1},
+        {x: 0, y: 1},
+        {x: 1, y: 1},
+        {x: -1, y: 0},
+        {x: 1, y: 0},
+        {x: 0, y: -1}
+      ]
+    }else{
+      this.directions = [
+        {x: -1, y: -1},
+        {x: 0, y: -1},
+        {x: 1, y: -1},
+        {x: -1, y: 0},
+        {x: 1, y: 0},
+        {x: 0, y: 1}
+      ]
+    }
   }
 }
 
@@ -161,6 +199,16 @@ class King extends Piece {
   constructor(x, y, team, pic, promotionPic) {
     super(x, y, team, pic, promotionPic);
     this.name = "king";
+    this.directions = [
+      {x: -1, y: -1},
+      {x: 0, y: -1},
+      {x: 1, y: -1},
+      {x: -1, y: 0},
+      {x: 1, y: 0},
+      {x: -1, y: 1},
+      {x: 0, y: 1},
+      {x: 1, y: 1},
+    ]
   }
 }
 

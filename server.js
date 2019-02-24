@@ -1,4 +1,5 @@
 // Dependencies
+var packageVersion = require('./package.json').version;
 var express = require("express");
 var http = require("http");
 var path = require("path");
@@ -7,7 +8,6 @@ var socketIO = require("socket.io");
 var api = express();
 var server = http.Server(api);
 var io = socketIO(server);
-
 // API
 api.use("/static", express.static(__dirname + "/static"));
 
@@ -29,6 +29,10 @@ api.get("/game/:name", function(request, response) {
     default:
       response.send({ message: "No game found with that id" });
   }
+});
+
+api.get("/version", function(request, response) {
+  response.send({version : packageVersion});
 });
 
 class Client {

@@ -5,7 +5,7 @@
     <script src="/socket.io/socket.io.js"></script>
   </head>
   <body>
-      <h1>Shogi Project v0.1.0</h1>
+      <h1>Shogi Project v<span id="version"></span></h1>
     <div hidden>
       <img id="bg" src="/static/shogi/images/background.jpg" alt="" />
       <img class="knight" src="/static/shogi/images/PiecesOriginal/cavalier.png" alt="" />
@@ -25,6 +25,15 @@
     </div>
     <canvas id="canvas"></canvas>
   </body>
+  <script>
+    let version = document.querySelector("#version");
+    fetch('http://localhost:5000/version')
+    .then(function(response) {
+      return response.json();
+    }).then(function(response){
+      version.innerHTML = response.version;
+    });
+  </script>
   <script src="/static/shogi/Board.js"></script>
   <script src="/static/shogi/Piece.js"></script>
   <script src="/static/shogi/game.js"></script>

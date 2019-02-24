@@ -47,8 +47,13 @@ canvas.addEventListener("click", function(evt) {
     selected_case = {};
     availableMoves = [];
   } else if (selectedSpot.name) {
-    selected_case = board.getPieceAt(coord.x, coord.y);
-    availableMoves = getAvailableMoves(selected_case);
+    if(selected_case && selectedSpot.x == selected_case.x && selectedSpot.y == selected_case.y){
+      selected_case = {};
+      availableMoves = [];
+    }else{
+      selected_case = board.getPieceAt(coord.x, coord.y);
+      availableMoves = getAvailableMoves(selected_case);
+    }
     drawBoard(ctx, board);
   }
 });
@@ -182,7 +187,6 @@ function getAvailableMoves(selected_case) {
           moves.push(move);
         }
       }
-      
     });
   }
   return moves;

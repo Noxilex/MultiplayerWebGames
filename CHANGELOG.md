@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/) and this 
 - Client/Server communication
 - Pieces movement rules (simple movement for normal pieces, loop for infinite movement pieces like rook or bishop)
 - Removes selection when you click away or on the current selected piece
+- Dynamic version update in the HTML page on change in package.json (still need to update changelog manually)
 
 ### Changed 
 - Rename game_two folder to shogi

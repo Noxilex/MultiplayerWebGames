@@ -47,6 +47,7 @@ canvas.addEventListener("click", function(evt) {
     selected_case = {};
     availableMoves = [];
   } else if (selectedSpot.name) {
+    //Cancels selection if the selected spot is the same as the last selected_case
     if(selected_case && selectedSpot.x == selected_case.x && selectedSpot.y == selected_case.y){
       selected_case = {};
       availableMoves = [];
@@ -54,6 +55,10 @@ canvas.addEventListener("click", function(evt) {
       selected_case = board.getPieceAt(coord.x, coord.y);
       availableMoves = getAvailableMoves(selected_case);
     }
+    drawBoard(ctx, board);
+  } else {
+    selected_case = {};
+    availableMoves = [];
     drawBoard(ctx, board);
   }
 });

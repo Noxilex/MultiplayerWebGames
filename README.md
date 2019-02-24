@@ -17,9 +17,12 @@ Available version on: http://noxilex.ovh:5000
 - [X] Data structure (board & pieces)
 - [X] Draw board & pieces
 - [X] Draw images instead of shapes
-- [ ] Piece movement rules
-- [ ] Piece movement preview (semi-working, need to make it work according to rules)
-- [X] Piece movement according to preview
+- [X] Piece movement rules
+    - [X] Piece movement preview (semi-working, need to make it work according to rules)
+    - [X] Piece movement according to preview
+- [ ] Promotion rules
+    - [ ] Promotion movement
+    - [ ] Promotion happens when you reach the end of the board
 - [ ] Piece take
 - [ ] Piece back in
 - [ ] Game over

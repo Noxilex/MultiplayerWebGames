@@ -187,6 +187,12 @@ class Bishop extends Piece {
     super(x, y, team, pic, promotionPic);
     this.name = "bishop";
     this.hasPromotion = true;
+    this.directions = [
+      {x: -1, y: 1, infinite: true},
+      {x: 1, y: 1, infinite: true},
+      {x: -1, y: -1, infinite: true},
+      {x: 1, y: -1, infinite: true},
+    ]
   }
 }
 
@@ -195,6 +201,12 @@ class Rook extends Piece {
     super(x, y, team, pic, promotionPic);
     this.name = "rook";
     this.hasPromotion = true;
+    this.directions = [
+      {x: 0, y: -1, infinite: true},
+      {x: 0, y: 1, infinite: true},
+      {x: -1, y: 0, infinite: true},
+      {x: 1, y: 0, infinite: true},
+    ]
   }
 }
 

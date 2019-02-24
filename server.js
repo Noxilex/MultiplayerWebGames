@@ -100,6 +100,15 @@ class Lancer extends Piece {
     super(x, y, team, pic, promotionPic);
     this.name = "lancer";
     this.hasPromotion = true;
+    if(team == "black"){
+      this.directions = [
+        {x: 0, y: 1, infinite: true}
+      ]
+    }else{
+      this.directions = [
+        {x: 0, y: -1, infinite: true}
+      ]
+    }
   }
 }
 
@@ -108,6 +117,17 @@ class Knight extends Piece {
     super(x, y, team, pic, promotionPic);
     this.name = "knight";
     this.hasPromotion = true;
+    if(team == "black"){
+      this.directions = [
+        {x: -1, y: 2},
+        {x: 1, y: 2}
+      ]
+    }else{
+      this.directions = [
+        {x: -1, y: -2},
+        {x: 1, y: -2}
+      ]
+    }
   }
 }
 
@@ -290,15 +310,18 @@ class Board {
   }
 
   movePiece(fromX, fromY, toX, toY) {
-    console.log(
-      `Moved from {x:${fromX}, y: ${fromY}} to {x:${toX}, y: ${toY}}`
-    );
-    let ancienPiece = this.getPieceAt(fromX, fromY);
-    ancienPiece.x = toX;
-    ancienPiece.y = toY;
-    this.plateau[fromX][fromY] = {};
-    this.plateau[toX][toY] = ancienPiece;
-    console.log();
+    if(insideBoundaries({x: fromX, y: toX}) && insideBoundaries({x: toX, y: toY})){
+      console.log(
+        `Moved from {x:${fromX}, y: ${fromY}} to {x:${toX}, y: ${toY}}`
+      );
+      let ancienPiece = this.getPieceAt(fromX, fromY);
+      ancienPiece.x = toX;
+      ancienPiece.y = toY;
+      this.plateau[fromX][fromY] = {};
+      this.plateau[toX][toY] = ancienPiece;
+    } else {
+      console.error("Trying to change a piece that is out of boundaries");
+    }
   }
 }
 
@@ -308,6 +331,9 @@ setInterval(function() {
   io.sockets.emit("state", clients);
 }, 1000 / 60);
 
+function insideBoundaries(pos){
+  return pos.x >= 0 && pos.x < 9 && pos.y >= 0 && pos.y < 9;
+}
 // setInterval(function() {
 //   io.sockets.emit('plateauUpdate', plateau);
 // }, 1000 / 60);

@@ -38,20 +38,17 @@ canvas.addEventListener("click", function(evt) {
   var mP = getMousePos(canvas, evt);
   var coord = getPosition(mP.x, mP.y);
   let selectedSpot = board.getPieceAt(coord.x, coord.y);
-  console.log(selectedSpot)
+  console.log(selectedSpot);
   if (selected_case.name && isAvailableMove(coord.x, coord.y)) {
-    console.log("Is available move")
-    console.log(coord)
     socket.emit("movePiece", {
       from: { x: selected_case.x, y: selected_case.y },
       to: { x: coord.x, y: coord.y }
     });
     selected_case = {};
     availableMoves = [];
-  } else if(selectedSpot.name){
+  } else if (selectedSpot.name) {
     selected_case = board.getPieceAt(coord.x, coord.y);
     availableMoves = getAvailableMoves(selected_case);
-    console.log(selected_case);
     drawBoard(ctx, board);
   }
 });
@@ -105,16 +102,22 @@ function drawBoard(ctx, board) {
     );
     ctx.stroke();
     if (availableMoves.length > 0) {
-      console.log(availableMoves);
       ctx.beginPath();
       ctx.strokeStyle = "#0000FF";
       ctx.fillStyle = "#0000FFAA";
       for (let i = 0; i < availableMoves.length; i++) {
-        let pos = availableMoves[i];
-        ctx.rect(pos.x * CASE_SIZE, pos.y * CASE_SIZE, CASE_SIZE, CASE_SIZE);
+        let move = availableMoves[i];
+        if (move.taking) {
+          ctx.strokeStyle = "#FF0000";
+          ctx.fillStyle = "#FF0000AA";
+        } else {
+          ctx.strokeStyle = "#0000FF";
+          ctx.fillStyle = "#0000FFAA"; 
+        }
+        ctx.rect(move.x * CASE_SIZE, move.y * CASE_SIZE, CASE_SIZE, CASE_SIZE);
         ctx.fillRect(
-          pos.x * CASE_SIZE,
-          pos.y * CASE_SIZE,
+          move.x * CASE_SIZE,
+          move.y * CASE_SIZE,
           CASE_SIZE,
           CASE_SIZE
         );
@@ -138,13 +141,27 @@ function getMousePos(canvas, evt) {
 
 function getAvailableMoves(selected_case) {
   //If one of the available moves doesn't have an empty case, don't show it/show it red
-  let moves = []
+  let moves = [];
   if (selected_case.directions) {
     selected_case.directions.forEach(direction => {
-      let move = {x: selected_case.x + direction.x, y: selected_case.y + direction.y}
-      //let piece = board.getPieceAt(move.x, move.y);
-      moves.push(move);
-    })
+      let move = {
+        x: selected_case.x + direction.x,
+        y: selected_case.y + direction.y,
+        taking: false
+      };
+      //If the move is inside the board
+      if(board.insideBoundaries(move.x, move.y)){
+        //Get the current case
+        let piece = board.getPieceAt(move.x, move.y);
+        //If it's not a piece, just push it to the available moves
+        if (!isPiece(piece)) {
+          moves.push(move);
+        } else if (isPiece(piece) && piece.team != selected_case.team) {
+          move.taking = true;
+          moves.push(move);
+        }
+      }
+    });
   }
   return moves;
 }
@@ -171,12 +188,14 @@ function drawPiece(piece) {
 function isAvailableMove(x, y) {
   let result = false;
   availableMoves.forEach(move => {
-    console.log(move);
-    console.log({x: x, y:y})
-    if (move.x == x && move.y == y){
+    if (move.x == x && move.y == y) {
       result = true;
       return;
     }
   });
   return result;
+}
+
+function isPiece(piece) {
+  return piece && piece.name ? true : false;
 }

@@ -112,7 +112,7 @@ function drawBoard(ctx, board) {
           ctx.fillStyle = "#FF0000AA";
         } else {
           ctx.strokeStyle = "#0000FF";
-          ctx.fillStyle = "#0000FFAA"; 
+          ctx.fillStyle = "#0000FFAA";
         }
         ctx.rect(move.x * CASE_SIZE, move.y * CASE_SIZE, CASE_SIZE, CASE_SIZE);
         ctx.fillRect(
@@ -150,7 +150,7 @@ function getAvailableMoves(selected_case) {
         taking: false
       };
       //If the move is inside the board
-      if(board.insideBoundaries(move.x, move.y)){
+      if (board.insideBoundaries(move.x, move.y)) {
         //Get the current case
         let piece = board.getPieceAt(move.x, move.y);
         //If it's not a piece, just push it to the available moves
@@ -160,6 +160,27 @@ function getAvailableMoves(selected_case) {
           move.taking = true;
           moves.push(move);
         }
+      }
+      if (direction.infinite) {
+        do {
+          move = {
+            x: move.x + direction.x,
+            y: move.y + direction.y,
+            taking: false
+          };
+          //If the move is inside the board
+          if (board.insideBoundaries(move.x, move.y)) {
+            //Get the current case
+            let piece = board.getPieceAt(move.x, move.y);
+            //If it's not a piece, just push it to the available moves
+            if (!isPiece(piece)) {
+              moves.push(move);
+            } else if (isPiece(piece) && piece.team != selected_case.team) {
+              move.taking = true;
+              moves.push(move);
+            }
+          }
+        } while (board.insideBoundaries(move.x, move.y) && !isPiece(board.getPieceAt(move.x, move.y)));
       }
     });
   }

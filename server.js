@@ -212,6 +212,16 @@ class Rook extends Piece {
       {x: -1, y: 0, infinite: true},
       {x: 1, y: 0, infinite: true},
     ]
+    this.directions_up = [
+      {x: 0, y: -1, infinite: true},
+      {x: 0, y: 1, infinite: true},
+      {x: -1, y: 0, infinite: true},
+      {x: 1, y: 0, infinite: true},
+      {x: -1, y: -1},
+      {x: 1, y: -1},
+      {x: -1, y: 1},
+      {x: 1, y: 1},
+    ]
   }
 }
 

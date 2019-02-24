@@ -39,6 +39,10 @@ canvas.addEventListener("click", function(evt) {
   var coord = getPosition(mP.x, mP.y);
   let selectedSpot = board.getPieceAt(coord.x, coord.y);
   console.log(selectedSpot);
+  handleMovePiece(selectedSpot, selected_case);
+});
+
+function handleMovePiece(selectedSpot, selected_case){
   if (selected_case.name && isAvailableMove(coord.x, coord.y)) {
     socket.emit("movePiece", {
       from: { x: selected_case.x, y: selected_case.y },
@@ -61,7 +65,7 @@ canvas.addEventListener("click", function(evt) {
     availableMoves = [];
     drawBoard(ctx, board);
   }
-});
+}
 
 //SOCKET
 
@@ -81,6 +85,27 @@ function setup() {
 function draw() {
   drawPlateau(ctx, board);
 }
+
+
+function drawPiece(piece) {
+  ctx.save();
+  let pixelPos = { x: piece.x * CASE_SIZE, y: piece.y * CASE_SIZE };
+
+  if (piece.team == "black") {
+    ctx.translate(pixelPos.x + CASE_SIZE / 2, pixelPos.y + CASE_SIZE / 2);
+    ctx.rotate((180 * Math.PI) / 180);
+    ctx.translate(-(pixelPos.x + CASE_SIZE / 2), -(pixelPos.y + CASE_SIZE / 2));
+  }
+  ctx.drawImage(
+    new_pieces[piece.name],
+    pixelPos.x,
+    pixelPos.y,
+    CASE_SIZE,
+    CASE_SIZE
+  );
+  ctx.restore();
+}
+
 /**
  *
  * @param {Canvas Context} ctx
@@ -195,25 +220,6 @@ function getAvailableMoves(selected_case) {
     });
   }
   return moves;
-}
-
-function drawPiece(piece) {
-  ctx.save();
-  let pixelPos = { x: piece.x * CASE_SIZE, y: piece.y * CASE_SIZE };
-
-  if (piece.team == "black") {
-    ctx.translate(pixelPos.x + CASE_SIZE / 2, pixelPos.y + CASE_SIZE / 2);
-    ctx.rotate((180 * Math.PI) / 180);
-    ctx.translate(-(pixelPos.x + CASE_SIZE / 2), -(pixelPos.y + CASE_SIZE / 2));
-  }
-  ctx.drawImage(
-    new_pieces[piece.name],
-    pixelPos.x,
-    pixelPos.y,
-    CASE_SIZE,
-    CASE_SIZE
-  );
-  ctx.restore();
 }
 
 function isAvailableMove(x, y) {

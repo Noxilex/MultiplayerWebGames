@@ -156,32 +156,33 @@ function getAvailableMoves(selected_case) {
         //If it's not a piece, just push it to the available moves
         if (!isPiece(piece)) {
           moves.push(move);
+          if (direction.infinite) {
+            do {
+              move = {
+                x: move.x + direction.x,
+                y: move.y + direction.y,
+                taking: false
+              };
+              //If the move is inside the board
+              if (board.insideBoundaries(move.x, move.y)) {
+                //Get the current case
+                let piece = board.getPieceAt(move.x, move.y);
+                //If it's not a piece, just push it to the available moves
+                if (!isPiece(piece)) {
+                  moves.push(move);
+                } else if (isPiece(piece) && piece.team != selected_case.team) {
+                  move.taking = true;
+                  moves.push(move);
+                }
+              }
+            } while (board.insideBoundaries(move.x, move.y) && !isPiece(board.getPieceAt(move.x, move.y)));
+          }
         } else if (isPiece(piece) && piece.team != selected_case.team) {
           move.taking = true;
           moves.push(move);
         }
       }
-      if (direction.infinite) {
-        do {
-          move = {
-            x: move.x + direction.x,
-            y: move.y + direction.y,
-            taking: false
-          };
-          //If the move is inside the board
-          if (board.insideBoundaries(move.x, move.y)) {
-            //Get the current case
-            let piece = board.getPieceAt(move.x, move.y);
-            //If it's not a piece, just push it to the available moves
-            if (!isPiece(piece)) {
-              moves.push(move);
-            } else if (isPiece(piece) && piece.team != selected_case.team) {
-              move.taking = true;
-              moves.push(move);
-            }
-          }
-        } while (board.insideBoundaries(move.x, move.y) && !isPiece(board.getPieceAt(move.x, move.y)));
-      }
+      
     });
   }
   return moves;

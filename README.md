@@ -5,7 +5,7 @@ Available version on: http://noxilex.ovh:5000
 
 ### Ideas
 - path:'/' -> Shows the list of all games available
-- path:'/{name_of_the_game} -> link to play a specific game
+- path:'/game/{name_of_the_game} -> link to play a specific game
 
 
 ### Ressources used

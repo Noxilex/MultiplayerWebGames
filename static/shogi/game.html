@@ -1,0 +1,30 @@
+<html>
+  <head>
+    <title>A Multiplayer Web Game</title>
+    <link rel="stylesheet" href="/static/shogi/style.css" />
+    <script src="/socket.io/socket.io.js"></script>
+  </head>
+  <body>
+    <div hidden>
+      <img id="bg" src="/static/shogi/images/background.jpg" alt="" />
+      <img class="knight" src="/static/shogi/images/PiecesOriginal/cavalier.png" alt="" />
+      <img class="knight_up" src="/static/shogi/images/PiecesOriginal/cavalier_or.png" alt="" />
+      <img class="silver" src="/static/shogi/images/PiecesOriginal/general_argent.png" alt="" />
+      <img class="silver_up" src="/static/shogi/images/PiecesOriginal/general_jade.png" alt="" />
+      <img class="lancer" src="/static/shogi/images/PiecesOriginal/lancier.png" alt="" />
+      <img class="lancer_up" src="/static/shogi/images/PiecesOriginal/lancier_or.png" alt="" />
+      <img class="rook" src="/static/shogi/images/PiecesOriginal/tour.png" alt="" />
+      <img class="rook_up" src="/static/shogi/images/PiecesOriginal/dragon.png" alt="" />
+      <img class="pawn" src="/static/shogi/images/PiecesOriginal/pion.png" alt="" />
+      <img class="pawn_up" src="/static/shogi/images/PiecesOriginal/pion_or.png" alt="" />
+      <img class="king" src="/static/shogi/images/PiecesOriginal/roi.png" alt="" />
+      <img class="gold" src="/static/shogi/images/PiecesOriginal/general_or.png" alt="" />
+      <img class="bishop" src="/static/shogi/images/PiecesOriginal/fou.png" alt="" />
+      <img class="bishop_up" src="/static/shogi/images/PiecesOriginal/drg.png" alt="" />
+    </div>
+    <canvas id="canvas"></canvas>
+  </body>
+  <script src="/static/shogi/Board.js"></script>
+  <script src="/static/shogi/Piece.js"></script>
+  <script src="/static/shogi/game.js"></script>
+</html>

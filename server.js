@@ -16,14 +16,15 @@ api.get("/", function(request, response) {
   response.sendFile(path.join(__dirname, "index.html"));
 });
 
-api.get("/game/:id", function(request, response) {
-  let id = parseInt(request.params.id);
-  switch (id) {
-    case 1:
+api.get("/game/:name", function(request, response) {
+  let name = request.params.name;
+  console.log(name)
+  switch (name) {
+    case "one":
       response.sendFile(path.join(__dirname, "/static/game_one/game.html"));
       break;
-    case 2:
-      response.sendFile(path.join(__dirname, "/static/game_two/game.html"));
+    case "shogi":
+      response.sendFile(path.join(__dirname, "/static/shogi/game.html"));
       break;
     default:
       response.send({ message: "No game found with that id" });

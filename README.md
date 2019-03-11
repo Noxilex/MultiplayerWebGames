@@ -1,7 +1,7 @@
 # MultiplayerWebGame
 Testing WebSocket to make a multiplayer game
 
-Available version on: http://noxilex.ovh:5000
+One working game running on : http://noxilex.ovh:5000/game/shogi
 
 ### Ideas
 - path:'/' -> Shows the list of all games available
